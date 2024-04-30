@@ -1,5 +1,6 @@
 import autosize from "autosize";
 import { useEffect, useRef, useState } from "react";
+import { isElement } from "react-dom/test-utils";
 import { text } from "stream/consumers";
 
 export const Table = () => {
@@ -31,6 +32,9 @@ export const Table = () => {
       amount: 0,
     },
   ]);
+  const [CloseButtonfordiscount, setCloseButtonfordiscount] = useState(false);
+  const [closeButtonforTax, setCloseButtonforTax] = useState(false);
+  const [closeButtonforShipping, setCloseButtonforShipping] = useState(false);
   const [focusedIndex, setFocusedIndex] = useState<number | null>(null);
   const [isDiscount, setIsDiscount] = useState<boolean>(false);
   const [isTax, setIsTax] = useState<boolean>(false);
@@ -86,9 +90,13 @@ export const Table = () => {
     if (textareaRef.current) {
       autosize(textareaRef.current);
     }
+  }, []);
+  useEffect(() => {
     if (textareaDescriptionRef.current) {
       autosize(textareaDescriptionRef.current);
     }
+  }, []);
+  useEffect(() => {
     if (textareaTermsRef.current) {
       autosize(textareaTermsRef.current);
     }
@@ -176,27 +184,7 @@ export const Table = () => {
       >
         Add a Line
       </button>
-      {/* <div className="flex flex-end items-end justify-end">
-        <div className="flex ">
-          <p className="text-left text-gray-600">SubTotal</p>
-          <p className="ml-4 mr-4">INR ₹00.00</p>
-        </div>
-      </div> */}
-      <div className="flex items-center mt-10 justify-between">
-        <div className="flex flex-col w-[60%]">
-          <input
-            type="text"
-            placeholder="Additional Notes"
-            className="focus:outline:none outline-none font-bold focus:border p-2 rounded-md w-full focus:border-2-gray"
-          />
-          <textarea
-            name=""
-            id=""
-            ref={textareaRef}
-            className="outline:none text-md focus:outline-none border border-2-gray p-2 rounded-md w-full mt-2 resize-none overflow-hidden"
-            placeholder="Additional Notes : any relevent information not already covered"
-          />
-        </div>
+      <div className="flex flex-end items-end justify-end">
         <div className="flex flex-col">
           <div className="flex ">
             <p className="text-left text-gray-600">SubTotal</p>
@@ -210,19 +198,29 @@ export const Table = () => {
                 <input
                   placeholder=""
                   value={billingDetails.discount}
-                  type="number"
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                    setBillingDetails({
-                      ...billingDetails,
-                      discount: Number(e.target.value),
-                    })
-                  }
-                  className="outline-none  w-10 focus:outline-none border-none "
+                  type="text"
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                    const value = e.target.value;
+                    if (/^\d*$/.test(value) && value.length <= 5) {
+                      setBillingDetails({
+                        ...billingDetails,
+                        discount: Number(value),
+                      });
+                    }
+                  }}
+                  onFocus={() => setCloseButtonfordiscount(true)}
+                  onBlur={() => setCloseButtonfordiscount(false)}
+                  className="outline-none  w-14 focus:outline-none border-none "
+                  maxLength={5}
                 />
               </p>
               <p
                 onClick={() => setShowDiscount(false)}
-                className="ml-4 text-red-400 cursor-pointer "
+                className={`ml-4 text-red-400 cursor-pointer  hover:opacity-1  ${
+                  CloseButtonfordiscount
+                    ? "opacity-100"
+                    : " opacity-0 hover:opacity-100"
+                }`}
               >
                 x
               </p>
@@ -244,19 +242,28 @@ export const Table = () => {
                 <input
                   placeholder=""
                   value={billingDetails.shipping}
-                  type="number"
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                    setBillingDetails({
-                      ...billingDetails,
-                      shipping: Number(e.target.value),
-                    })
-                  }
-                  className="outline-none  w-10 focus:outline-none border-none "
+                  type="text"
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                    const value = e.target.value;
+                    if (/^\d*$/.test(value) && value.length <= 5) {
+                      setBillingDetails({
+                        ...billingDetails,
+                        shipping: Number(value),
+                      });
+                    }
+                  }}
+                  onFocus={() => setCloseButtonforShipping(true)}
+                  onBlur={() => setCloseButtonforShipping(false)}
+                  className="outline-none  w-14 focus:outline-none border-none "
                 />
               </p>
               <p
                 onClick={() => setShowShipping(false)}
-                className="ml-4 text-red-400 cursor-pointer "
+                className={`ml-4 text-red-400 cursor-pointer ${
+                  closeButtonforShipping
+                    ? "opacity-100"
+                    : " opacity-0 hover:opacity-100"
+                }`}
               >
                 x
               </p>
@@ -277,19 +284,28 @@ export const Table = () => {
                 <input
                   placeholder=""
                   value={billingDetails.tax}
-                  type="number"
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                    setBillingDetails({
-                      ...billingDetails,
-                      tax: Number(e.target.value),
-                    })
-                  }
-                  className="outline-none  w-10 focus:outline-none border-none "
+                  type="text"
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                    const value = e.target.value;
+                    if (/^\d*$/.test(value) && value.length <= 5) {
+                      setBillingDetails({
+                        ...billingDetails,
+                        tax: Number(value),
+                      });
+                    }
+                  }}
+                  onFocus={() => setCloseButtonforTax(true)}
+                  onBlur={() => setCloseButtonforTax(false)}
+                  className="outline-none  w-14 focus:outline-none border-none "
                 />
               </p>
               <p
                 onClick={() => setShowTax(false)}
-                className="ml-4 text-red-400 cursor-pointer "
+                className={`ml-4 text-red-400 cursor-pointer ${
+                  closeButtonforTax
+                    ? "opacity-100"
+                    : " opacity-0 hover:opacity-100"
+                }`}
               >
                 x
               </p>
@@ -308,6 +324,22 @@ export const Table = () => {
             </p>
             <p className="ml-4 mr-4"> ₹00.00</p>
           </div>
+        </div>
+      </div>
+      <div className="flex items-center mt-10 justify-between">
+        <div className="flex flex-col w-[60%]">
+          <input
+            type="text"
+            placeholder="Additional Notes"
+            className="focus:outline:none outline-none font-bold focus:border p-2 rounded-md w-full focus:border-2-gray"
+          />
+          <textarea
+            name=""
+            id=""
+            ref={textareaRef}
+            className="outline:none text-md focus:outline-none border border-2-gray p-2 rounded-md w-full mt-2 resize-none overflow-hidden"
+            placeholder="Additional Notes : any relevent information not already covered"
+          />
         </div>
       </div>
       <div className="flex items-center mt-10 justify-between">
