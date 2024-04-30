@@ -52,7 +52,7 @@ export const Invoicepdf = () => {
     );
   };
   return (
-    <div className=" text-lg p-4 items-center justify-center   mt-10 bg-white border-2 border-gray-100">
+    <div className=" text-lg p-4 mb-24  rounded-md shadow-md items-center justify-center w-[60rem]  mt-10 bg-white border-2 border-gray-100">
       <h1 className="text-3xl  mt-10 font-semibold">Invoice</h1>
       <div className="flex  justify-between mt-4">
         <div className="">
