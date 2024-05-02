@@ -13,6 +13,13 @@ export default function Home() {
           #Reinventingthewheelagain
         </p>
         <Invoicepdf />
+        <p className="mb-10  cursor-pointer text-2xl bg-blue-950 p-2 rounded text-white">
+          Download the invoice
+        </p>
+
+        <a target="_blank" className="mb-10" href="https://ahmadswalih.com">
+          ©ahmadswalih.com ↗
+        </a>
       </div>
     </div>
   );

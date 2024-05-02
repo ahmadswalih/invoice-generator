@@ -39,6 +39,48 @@ export const Table = () => {
   const [isDiscount, setIsDiscount] = useState<boolean>(false);
   const [isTax, setIsTax] = useState<boolean>(false);
   const [isShipping, setIsShipping] = useState<boolean>(false);
+  const [preTotalAmount, setPreTotoalamount] = useState<number>(0);
+  const [SubTotal, setSubTotal] = useState<number>(0);
+  const [amountPaid, setAmountPaid] = useState<number>(0);
+  const [amountDue, setAmountDue] = useState<string>("");
+
+  const calculateAmountDue = () => {
+    const amount = preTotalAmount - amountPaid;
+    const formattedAmount = amount.toLocaleString("en-IN");
+    setAmountDue(formattedAmount);
+  };
+  useEffect(() => {
+    calculateAmountDue();
+  }, [amountPaid | preTotalAmount]);
+
+  const calculatePretotalAmount = () => {
+    const subtotal = calculateSubtotal();
+    const discountedAmount = subtotal - billingDetails.discount;
+    const finalAmount =
+      discountedAmount + billingDetails.shipping + billingDetails.tax;
+    setPreTotoalamount(finalAmount);
+  };
+
+  useEffect(() => {
+    calculatePretotalAmount();
+  }, [
+    tableData,
+    billingDetails.discount,
+    billingDetails.tax,
+    billingDetails.shipping,
+  ]);
+
+  const calculateSubtotal = () => {
+    let subtotal = 0;
+    for (let row of tableData) {
+      subtotal += row.amount;
+    }
+    return subtotal;
+  };
+  useEffect(() => {
+    const subtotal = calculateSubtotal();
+    setSubTotal(subtotal);
+  }, [tableData]);
 
   const handleInputFocus = (index: number) => {
     setFocusedIndex(index);
@@ -54,10 +96,15 @@ export const Table = () => {
     index: number
   ) => {
     const { value } = e.target;
+    if (value.length > 8) {
+      return; // Don't update the state if the new value is longer than 8 digits
+    }
     setTableData((prevState) =>
       prevState.map((data, i) => {
         if (i === index) {
-          return { ...data, [field]: value };
+          const updatedData = { ...data, [field]: Number(value) || "" };
+          updatedData.amount = updatedData.quantity * updatedData.rate;
+          return updatedData;
         }
         return data;
       })
@@ -82,9 +129,12 @@ export const Table = () => {
     setTableData((prevState) => prevState.filter((_, i) => i !== index));
   };
 
-  const handleDiscount = () => {
-    setIsDiscount((prevState) => !prevState);
+  const finalAmount = () => {
+    //  const baseAmount =
   };
+  useEffect(() => {
+    finalAmount();
+  }, [tableData[0]?.quantity | tableData[0]?.rate]);
 
   useEffect(() => {
     if (textareaRef.current) {
@@ -101,18 +151,6 @@ export const Table = () => {
       autosize(textareaTermsRef.current);
     }
   }, []);
-
-  useEffect(() => {
-    const newAmount = tableData[0]?.quantity * tableData[0]?.rate;
-    setTableData((prevState) =>
-      prevState.map((data, index) => {
-        if (index === 0) {
-          return { ...data, amount: newAmount };
-        }
-        return data;
-      })
-    );
-  }, [tableData[0]?.quantity, tableData[0]?.rate]);
 
   return (
     <div>
@@ -144,7 +182,7 @@ export const Table = () => {
                   type="number"
                   className="border w-28 rounded-md p-2 h-11 ml-2 focus:outline-none overflow-hidden appearance-none no-arrows resize-none border-gray-200"
                   placeholder="Quantity"
-                  value={data.quantity}
+                  value={data.quantity === 0 ? "" : data.quantity}
                   onChange={(e) => handleInputChange(e, "quantity", index)}
                 />
               </td>
@@ -158,7 +196,7 @@ export const Table = () => {
                 />
               </td>
               <td>
-                <p>₹{data.amount}</p>
+                <p>₹{data.amount.toLocaleString("en-IN")}</p>
               </td>
               <td>
                 {tableData.length > 1 && (
@@ -187,12 +225,12 @@ export const Table = () => {
       <div className="flex flex-end items-end justify-end">
         <div className="flex flex-col">
           <div className="flex ">
-            <p className="text-left text-gray-600">SubTotal</p>
-            <p className="ml-4 mr-4">INR ₹00.00</p>
+            <p className="text-left text-gray-600">SubTotal:</p>
+            <p className="ml-4 mr-4"> ₹{SubTotal.toLocaleString("en-IN")}</p>
           </div>
           {showDiscount ? (
             <div className="flex mt-2 ">
-              <p className="text-left  text-gray-600">Discount</p>
+              <p className="text-left  text-gray-600">Discount:</p>
               <p className="ml-4 mr-4">
                 {" "}
                 <input
@@ -236,7 +274,7 @@ export const Table = () => {
 
           {showshipping ? (
             <div className="flex mt-2 ">
-              <p className="text-left  text-gray-600">Shipping</p>
+              <p className="text-left  text-gray-600">Shipping:</p>
               <p className="ml-4 mr-4">
                 {" "}
                 <input
@@ -278,7 +316,7 @@ export const Table = () => {
           )}
           {showTax ? (
             <div className="flex mt-2 ">
-              <p className="text-left  text-gray-600">Tax</p>
+              <p className="text-left  text-gray-600">Tax:</p>
               <p className="ml-4 mr-4">
                 {" "}
                 <input
@@ -296,7 +334,7 @@ export const Table = () => {
                   }}
                   onFocus={() => setCloseButtonforTax(true)}
                   onBlur={() => setCloseButtonforTax(false)}
-                  className="outline-none  w-14 focus:outline-none border-none "
+                  className="outline-none  w-14  rounded  focus:outline-none border-none  "
                 />
               </p>
               <p
@@ -319,10 +357,38 @@ export const Table = () => {
             </p>
           )}
           <div className="flex mt-2 ">
-            <p className="text-left  font-semibold  text-gray-400">
-              Final Amount to Pay
+            <p className="text-left  font-semibold  text-gray-400">Total</p>
+            <p className="ml-4 mr-4">
+              {" "}
+              ₹{preTotalAmount.toLocaleString("en-IN")}
             </p>
-            <p className="ml-4 mr-4"> ₹00.00</p>
+          </div>
+          <div className="flex mt-2 ">
+            <p className="text-left  font-semibold  text-gray-400">
+              Amount Paid
+            </p>
+            <p className="ml-4 mr-4">
+              <input
+                placeholder=""
+                value={amountPaid}
+                type="text"
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                  const value = e.target.value;
+                  if (/^\d*$/.test(value) && value.length <= 8) {
+                    setAmountPaid(Number(value));
+                  }
+                }}
+                onFocus={() => setCloseButtonforTax(true)}
+                onBlur={() => setCloseButtonforTax(false)}
+                className="outline-none  w-28 focus:outline-none border-none "
+              />
+            </p>
+          </div>
+          <div className="flex mt-2 bg-blue-100 p-2 item-center justify-center rounded  ">
+            <p className="text-left  font-semibold  text-gray-600">
+              Ballance Due:
+            </p>
+            <p className="ml-4 mr-4"> ₹{amountDue}</p>
           </div>
         </div>
       </div>
@@ -331,7 +397,8 @@ export const Table = () => {
           <input
             type="text"
             placeholder="Additional Notes"
-            className="focus:outline:none outline-none font-bold focus:border p-2 rounded-md w-full focus:border-2-gray"
+            className="focus:outline:none outline-none font-semibold  text-gray-600 focus:border p-2 rounded-md w-full focus:border-2-gray"
+            maxLength={45}
           />
           <textarea
             name=""
@@ -347,7 +414,8 @@ export const Table = () => {
           <input
             type="text"
             placeholder="Terms and Conditions"
-            className="focus:outline:none outline-none focus:border font-bold  p-2 rounded-md w-full focus:border-2-gray"
+            className="focus:outline:none outline-none focus:border text-gray-600 font-semibold  p-2 rounded-md w-full focus:border-2-gray"
+            maxLength={45}
           />
           <textarea
             name=""
