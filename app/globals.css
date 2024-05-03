@@ -2,6 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Hide elements with pdf-exclude class when printing */
+@media print {
+  .pdf-exclude {
+    display: none !important;
+  }
+}
+
 :root {
   --foreground-rgb: 0, 0, 0;
 }
@@ -27,5 +34,12 @@ body {
 @layer utilities {
   .text-balance {
     text-wrap: balance;
+  }
+}
+
+/* Hide elements with pdf-exclude class when printing */
+@media print {
+  .pdf-exclude {
+    display: none !important;
   }
 }

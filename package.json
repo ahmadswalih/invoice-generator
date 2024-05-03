@@ -10,13 +10,18 @@
   },
   "dependencies": {
     "autosize": "^6.0.1",
+    "html-to-pdfmake": "^2.5.7",
+    "html2canvas": "^1.4.1",
+    "jspdf": "^2.5.1",
     "next": "14.2.3",
+    "pdfmake": "^0.2.10",
     "react": "^18",
     "react-datepicker": "^6.9.0",
     "react-dom": "^18"
   },
   "devDependencies": {
     "@types/autosize": "^4.0.3",
+    "@types/html-to-pdfmake": "^2.4.4",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-datepicker": "^6.2.0",

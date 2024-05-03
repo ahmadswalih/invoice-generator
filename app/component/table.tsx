@@ -218,7 +218,7 @@ export const Table = () => {
       </table>
       <button
         onClick={addRow}
-        className="mt-2 border border-2-black text-gray-700 hover:bg-green-600  hover:text-white py-2 px-4 rounded"
+        className="mt-2 border pdf-exclude border-2-black text-gray-700 hover:bg-green-600  hover:text-white py-2 px-4 rounded"
       >
         Add a Line
       </button>
@@ -384,7 +384,7 @@ export const Table = () => {
               />
             </p>
           </div>
-          <div className="flex mt-2 bg-blue-100 p-2 item-center justify-center rounded  ">
+          <div className="flex mt-2 bg-blue-100 p-2 item-center justify-start rounded  ">
             <p className="text-left  font-semibold  text-gray-600">
               Ballance Due:
             </p>

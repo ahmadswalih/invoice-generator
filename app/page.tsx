@@ -1,4 +1,5 @@
 import { Invoicepdf } from "./component/Invoicepdf";
+import InvoiceDownloadButton from "./component/downloadbtn";
 
 export default function Home() {
   return (
@@ -12,10 +13,10 @@ export default function Home() {
         <p className=" bg-gray-50 mt-4 border-2 p-2 rounded-lg">
           #Reinventingthewheelagain
         </p>
-        <Invoicepdf />
-        <p className="mb-10  cursor-pointer text-2xl bg-blue-950 p-2 rounded text-white">
-          Download the invoice
-        </p>
+        <div id="invoicePdf">
+          <Invoicepdf />
+        </div>
+        <InvoiceDownloadButton />
 
         <a target="_blank" className="mb-10" href="https://ahmadswalih.com">
           ©ahmadswalih.com ↗
