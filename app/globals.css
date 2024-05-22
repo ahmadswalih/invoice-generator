@@ -43,3 +43,13 @@ body {
     display: none !important;
   }
 }
+/* Hide everything except the desired content */
+/* body * {
+  display: none;
+} */
+
+/* Show the desired content */
+/* #invoicePdf,
+#invoicePdf * {
+  display: block !important;
+} */
